@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Image Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css" integrity="sha512-9xKTRVabjVeZmc+GUW8GgSmcREDunMM+Dt/GrzchfN8tkwHizc5RP4Ok/MXFFy5rIjJjzhndFScTceq5e6GvVQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" href="./file/icons.jpeg" type="image/x-icon">
+</head>
+<body>
+
+    <div class="container">
+        <h1>'AI' TEXT TO IMAGE GENERATOR</h1>
+        <div class="input">
+            <label for="">Create an image from Text prompt :</label>
+            <input type="input" id="input" placeholder="Enter a text to generate the image">
+            <button id="btn">Generate Image</button>
+        </div>
+
+        <div class="output">
+            <div class="image">
+                <img src="" alt="" id="image">
+                <i class="fa-regular fa-image fa-2xl" id="img"></i>
+                <img src="./file/loading-2874.gif" id="loading" alt="">
+            </div>
+            <div class="btns">
+                    <button id="download">Download
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                    <button id="reset">Reset
+                        <i class="fa-solid fa-trash-can-arrow-up"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
