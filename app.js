@@ -1,4 +1,4 @@
-const key ="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";
+const key ="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";
 
 const inputText=document.getElementById("input");
 const image=document.getElementById("image");
