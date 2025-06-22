@@ -1,76 +1,52 @@
-    const key = "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";
-    const inputText = document.getElementById("input");
-    const image = document.getElementById("image");
-    const GenBtn = document.getElementById("btn");
-    const img = document.getElementById("img");
+ const key = "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";
+    const input = document.getElementById("input");
+    const btn = document.getElementById("btn");
     const loading = document.getElementById("loading");
-    const resetBtn = document.getElementById("reset");
-    const downloadBtn = document.getElementById("download");
+    const imgEl = document.getElementById("image");
+    const dlBtn = document.getElementById("download");
 
-    async function query(data) {
-      const response = await fetch(
-        "https://api-inference.huggingface.co/models/CompVis/stable-diffusion-v1-4",
+    async function query(prompt) {
+      const res = await fetch(
+        "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1",
         {
+          method: "POST",
           headers: {
             Authorization: `Bearer ${key}`,
-            Accept: "image/png",
+            Accept: "application/json",
             "Content-Type": "application/json"
           },
-          method: "POST",
-          body: JSON.stringify({ inputs: data }),
+          body: JSON.stringify({ inputs: prompt })
         }
       );
-      if (!response.ok) {
-        throw new Error("Failed to generate image. Model may be loading or invalid input.");
-      }
-      return await response.blob();
+      if (res.status === 503) throw new Error("Model is loading, try again in a few seconds.");
+      if (!res.ok) throw new Error(`Error ${res.status}: ${await res.text()}`);
+      const blob = await res.blob();
+      return blob;
     }
 
     async function generate() {
-      const prompt = inputText.value.trim();
-      if (!prompt) return alert("Please enter a description.");
+      const prompt = input.value.trim();
+      if (!prompt) return alert("Enter a prompt.");
       loading.style.display = "block";
-      image.style.display = "none";
-
+      imgEl.style.display = "none";
+      dlBtn.style.display = "none";
       try {
         const blob = await query(prompt);
-        const objectUrl = URL.createObjectURL(blob);
-        image.src = objectUrl;
-        image.style.display = "block";
-        loading.style.display = "none";
-
-        downloadBtn.onclick = () => download(objectUrl);
-      } catch (err) {
-        loading.style.display = "none";
-        alert(err.message);
-      }
-    }
-
-    GenBtn.addEventListener("click", () => {
-      generate();
-      img.style.display = "none";
-    });
-
-    inputText.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        generate();
-        img.style.display = "none";
-      }
-    });
-
-    resetBtn.addEventListener("click", () => {
-      inputText.value = "";
-      image.style.display = "none";
-    });
-
-    function download(objectUrl) {
-      fetch(objectUrl)
-        .then((res) => res.blob())
-        .then((file) => {
-          let a = document.createElement("a");
-          a.href = URL.createObjectURL(file);
-          a.download = new Date().getTime() + ".png";
+        const url = URL.createObjectURL(blob);
+        imgEl.src = url; imgEl.style.display = "block";
+        dlBtn.style.display = "inline-block";
+        dlBtn.onclick = () => {
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `img_${Date.now()}.png`;
           a.click();
-        })
-        .catch(() => alert("Download failed."));
+        };
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        loading.style.display = "none";
+      }
     }
+
+    btn.onclick = generate;
+    input.onkeydown = e => { if (e.key === "Enter") generate(); };
